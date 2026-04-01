@@ -98,7 +98,7 @@ async function populateMods() {
           _id: latestVersion.identifier,
           name: latestVersion.name,
           abstract: latestVersion.abstract,
-          author: latestVersion.author,
+          author: Array.isArray(latestVersion.author) ? latestVersion.author : [latestVersion.author],
           description: latestVersion.description,
           release_status: latestVersion.release_status,
           tags: latestVersion.tags,

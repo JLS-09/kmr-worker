@@ -4,7 +4,7 @@ const ModSchema = new mongoose.Schema({
   _id: String,
   name: { type: String, required: true },
   abstract: String,
-  author: { type: mongoose.Schema.Types.Mixed, required: true }, // String or [String]
+  author: [String],
   description: String,
   release_status: { type: String, enum: ["stable", "testing", "development"], default: "stable" },
   tags: [String],

@@ -4,7 +4,7 @@ export type ModUpdate = {
   _id: string,
   name: string,
   abstract: string,
-  author: mongoose.Schema.Types.Mixed,
+  author: String[],
   description: string,
   release_status: string,
   tags: string[],
