@@ -6,7 +6,7 @@ const ModSchema = new mongoose.Schema({
   abstract: String,
   author: [String],
   description: String,
-  release_status: { type: String, enum: ["stable", "testing", "development"], default: "stable" },
+  release_status: { type: String, enum: ["stable", "testing", "development"] },
   tags: [String],
   resources: {
     homepage: String,
