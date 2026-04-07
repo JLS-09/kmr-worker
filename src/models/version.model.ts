@@ -9,7 +9,7 @@ const VersionSchema = new mongoose.Schema({
   version: { type: String, required: true },
   install: [mongoose.Schema.Types.Mixed],
   comment: String,
-  ksp_version: {type: String, default: "any"},
+  ksp_version: String,
   ksp_version_min: String,
   ksp_version_max: String,
   ksp_version_strict: {type: Boolean, default: false},
