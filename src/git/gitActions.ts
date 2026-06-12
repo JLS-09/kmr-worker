@@ -91,20 +91,6 @@ async function populateMods() {
           versionIds.push(version);
         }
       });
-      
-      if (versionIds.length > 0) {
-        const latestVersion = JSON.parse(readFileSync(`./public/CKAN-meta/${file}/${versionIds[versionIds.length - 1]}`, { encoding: "utf8" }));
-        mods.push(new Mod({
-          _id: latestVersion.identifier,
-          name: latestVersion.name,
-          abstract: latestVersion.abstract,
-          author: Array.isArray(latestVersion.author) ? latestVersion.author : [latestVersion.author],
-          description: latestVersion.description,
-          release_status: latestVersion.release_status,
-          tags: latestVersion.tags,
-          resources: latestVersion.resources
-        }))      
-      }
 
       for (const version of versionIds) {
         const versionJson = JSON.parse(readFileSync(`./public/CKAN-meta/${file}/${version}`, { encoding: "utf8" }));
@@ -137,15 +123,28 @@ async function populateMods() {
           kind: versionJson.kind,
           provides: versionJson.provides,
         }))
+      }
 
+      if (versionIds.length > 0) {
+        const latestVersion = JSON.parse(readFileSync(`./public/CKAN-meta/${file}/${versionIds[versionIds.length - 1]}`, { encoding: "utf8" }));
+        mods.push(new Mod({
+          _id: latestVersion.identifier,
+          name: latestVersion.name,
+          abstract: latestVersion.abstract,
+          author: Array.isArray(latestVersion.author) ? latestVersion.author : [latestVersion.author],
+          description: latestVersion.description,
+          release_status: latestVersion.release_status,
+          tags: latestVersion.tags,
+          resources: latestVersion.resources,
+          versions: versions.filter(version => version.identifier === latestVersion.identifier),
+        }))
       }
     }
   }
   logger.info("Correctly formatted mods and versions!")
 
-  await bulkSaveMods(mods as ModUpdate[]).then(console.log).catch(console.error);
   await bulkSaveVersions(versions as VersionUpdate[]).then(console.log).catch(console.error);
-  
+  await bulkSaveMods(mods as unknown as ModUpdate[]).then(console.log).catch(console.error);
 }
 
 async function bulkSaveMods(mods: ModUpdate[]) {
@@ -160,7 +159,8 @@ async function bulkSaveMods(mods: ModUpdate[]) {
           description: mod.description,
           release_status: mod.release_status,
           tags: mod.tags,
-          resources: mod.resources
+          resources: mod.resources,
+          versions: mod.versions.map((v: any) => v._id)
       }},
       upsert: true
       }

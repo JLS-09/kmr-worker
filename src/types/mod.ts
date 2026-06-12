@@ -26,4 +26,5 @@ export type ModUpdate = {
     gogstore: string,
     epicstore: string,
   },
+  versions: [{ type: String, ref: 'VersionUpdate' }]
 }

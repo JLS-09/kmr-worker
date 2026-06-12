@@ -26,6 +26,7 @@ const ModSchema = new mongoose.Schema({
     gogstore: String,
     epicstore: String,
   },
+  versions: [{ type: String, ref: 'Version' }]
 });
 
 export const Mod = mongoose.model("Mod", ModSchema);
