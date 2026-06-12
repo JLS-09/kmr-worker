@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { VersionSchema } from "./version.model";
 
 const ModSchema = new mongoose.Schema({
   _id: String,
@@ -26,7 +27,7 @@ const ModSchema = new mongoose.Schema({
     gogstore: String,
     epicstore: String,
   },
-  versions: [{ type: String, ref: 'Version' }]
+  versions: [VersionSchema],
 });
 
 export const Mod = mongoose.model("Mod", ModSchema);

@@ -136,15 +136,14 @@ async function populateMods() {
           release_status: latestVersion.release_status,
           tags: latestVersion.tags,
           resources: latestVersion.resources,
-          versions: versions.filter(version => version.identifier === latestVersion.identifier),
+          versions: versions.filter(v => v.identifier === latestVersion.identifier).map(v => v.toObject()),
         }))
       }
     }
   }
   logger.info("Correctly formatted mods and versions!")
 
-  await bulkSaveVersions(versions as VersionUpdate[]).then(console.log).catch(console.error);
-  await bulkSaveMods(mods as unknown as ModUpdate[]).then(console.log).catch(console.error);
+  await bulkSaveMods(mods as ModUpdate[]).then(console.log).catch(console.error);
 }
 
 async function bulkSaveMods(mods: ModUpdate[]) {
@@ -153,15 +152,15 @@ async function bulkSaveMods(mods: ModUpdate[]) {
     updateOne: {
       filter: { _id: mod._id },
       update: { $set: {
-          name: mod.name,
-          abstract: mod.abstract,
-          author: mod.author,
-          description: mod.description,
-          release_status: mod.release_status,
-          tags: mod.tags,
-          resources: mod.resources,
-          versions: mod.versions.map((v: any) => v._id)
-      }},
+        name: mod.name,
+        abstract: mod.abstract,
+        author: mod.author,
+        description: mod.description,
+        release_status: mod.release_status,
+        tags: mod.tags,
+        resources: mod.resources,
+        versions: mod.versions
+    }},
       upsert: true
       }
     }));
@@ -170,50 +169,6 @@ async function bulkSaveMods(mods: ModUpdate[]) {
     logger.info("Done uploading mods!");
   } else {
     logger.error(`Error uploading mods`);
-  }
-  return result;
-}
-
-async function bulkSaveVersions(versions: VersionUpdate[]) {
-  logger.info("Uploading versions...")
-  const operations: any = versions.map(version => ({
-    updateOne: {
-      filter: { _id: version._id },
-      update: { $set: { 
-          spec_version: version.spec_version,
-          identifier: version.identifier,
-          download: version.download,
-          license: version.license,
-          version: version.version,
-          install: version.install,
-          comment: version.comment,
-          ksp_version: version.ksp_version,
-          ksp_version_min: version.ksp_version_min,
-          ksp_version_max: version.ksp_version_max,
-          ksp_version_strict: version.ksp_version_strict,
-          localizations: version.localizations,
-          download_size: version.download_size,
-          download_hash: version.download_hash,
-          download_content_type: version.download_content_type,
-          install_size: version.install_size,
-          release_date: version.release_date,
-          depends: version.depends,
-          recommends: version.recommends,
-          suggests: version.suggests,
-          supports: version.supports,
-          conflicts: version.conflicts,
-          replaced_by: version.replaced_by,
-          kind: version.kind,
-          provides: version.provides,
-        }},
-      upsert: true
-      }
-    }));
-  const result = await Version.bulkWrite(operations);
-  if (result.isOk()) {
-    logger.info("Done uploading versions!");
-  } else {
-    logger.error(`Error uploading versions`);
   }
   return result;
 }

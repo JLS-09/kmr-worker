@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { VersionUpdate } from "./version";
 
 export type ModUpdate = {
   _id: string,
@@ -26,5 +26,5 @@ export type ModUpdate = {
     gogstore: string,
     epicstore: string,
   },
-  versions: [{ type: String, ref: 'VersionUpdate' }]
+  versions: VersionUpdate[],
 }

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const VersionSchema = new mongoose.Schema({
+export const VersionSchema = new mongoose.Schema({
   spec_version: { type: mongoose.Schema.Types.Mixed, required: true }, // Could be Number or String
   _id: String,
   identifier: { type: String, required: true },
